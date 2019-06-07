@@ -11,10 +11,65 @@ class Obra {
 	var property implementosDeGasColocados = 0
 	var property cablesElectricosColocados = 0
 	
-	method habitaciones()	
+	const obreros = #{}
+
+	method contratarObrero(quien){ obreros.add(quien) }
+	
+	method despedirObrero(quien) { 
+		if(quien.estaDeLicencia()){
+			self.error("Las leyes laborales están para respetarse - licencia implica estabilidad laboral")
+		}
+		obreros.remove(quien)
+	}
+	
+	method obrerosDisponibles(){ return obreros.filter{obrero => not obrero.estaDeLicencia() }}
+	
+	method plantillaObreros() = obreros
+	
+	method jornadaLaboral(){
+		if(self.obrerosDisponibles().size() == 0 ){
+			self.error("No hay obreros disponibles para trabajar")
+		}
+		self.obrerosDisponibles().forEach{ obrero => obrero.jornadaLaboral(self) }
+		
+	}
+	method mandarDeLicencia(quien){ quien.irDeLicencia() }
+	method vuelveDeLicencia(quien){ quien.volverDeLicencia()}
+	
+	method agregarLadrillos(cuantos){ ladrillos += cuantos }
+	method agregarMetrosDeCanio(cuantos){ metrosDeCanio += cuantos }
+	method agregarMetrosDeCable(cuantos){metrosDeCable += cuantos}
+	method agregarCinta(cuantos){cinta += cuantos}
+	method agregarFosforos(cuantos){fosforos += cuantos}
+	method agregarArandelas(cuantos){arandelas += cuantos}
+	
+	method estaEsteObrero(quien) {return obreros.contains(quien)}
+	
+	method sePuedeFinalizar(){
+		 return self.metrosPorHabitacion() && self.implementosDeAgua() && self.implementosDeGas()
+	}
+	
+	method implementosDeAgua(){
+		return implementosDeAguaColocados  >= (10 * self.banios())
+	}
+	
+	method metrosPorHabitacion(){
+		return (metrosCuadradosConstruidos) >= (50 * self.habitaciones())
+	}
+	
+	method implementosDeGas(){
+		return implementosDeGasColocados >= self.banios() + 3 * self.habitaciones() 
+	}
+	
+	method colocarMetros(){
+		return (metrosCuadradosConstruidos + cablesElectricosColocados >= (50 * self.habitaciones() + 100 * self.pisos()))
+	}
+	
+	method habitaciones()
 	method pisos()
 	method banios() 
 }
+
 
 
 class Casa inherits Obra {
@@ -25,6 +80,10 @@ class Casa inherits Obra {
 	override method banios() = banios
 	
 	override method pisos() = 1
+	
+	
+	
+	
 }
 
 class Edificio inherits Obra {

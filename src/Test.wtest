@@ -1,0 +1,50 @@
+import obra.*
+import Obrero.*
+import Albanil.*
+import Gasista.*
+import Electricista.*
+import Plomero.*
+
+
+describe "Testeo Obra" {
+	var obra = new Casa(ladrillos = 1000, metrosDeCanio = 400, fosforos = 8000, arandelas = 500)
+	
+	var pepe = new Albanil()
+	var pepe2 = new Albanil()
+	var joaco = new Gasista()
+	var joaco2 = new Gasista()
+	var lol = new Plomero()
+	
+	fixture{
+		
+		obra.contratarObrero(pepe)
+		obra.contratarObrero(pepe2)
+		obra.contratarObrero(joaco)
+		obra.contratarObrero(joaco2)
+		obra.contratarObrero(lol)
+				
+	} 
+	/*test"Tirar error"{
+		assert.throwsException{
+			obra.jornadaLaboral()
+		}
+	}*/
+	
+	test "Obra ladrillos" {
+		pepe.jornadaLaboral(obra)
+		assert.equals(900, obra.ladrillos())
+	}
+	
+	test "Registro de jornada y no se puede despedir"{
+		obra.mandarDeLicencia(pepe)
+		obra.jornadaLaboral()
+		assert.equals(900, obra.ladrillos())
+		assert.equals(384, obra.metrosDeCanio())
+		assert.equals(7960, obra.fosforos())
+		assert.equals(470, obra.arandelas())
+		
+		assert.throwsException{
+			obra.despedirObrero(pepe)
+		}
+	}
+}
